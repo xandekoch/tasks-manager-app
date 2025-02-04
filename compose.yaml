@@ -13,9 +13,13 @@ services:
     restart: unless-stopped
     env_file:
       - ./frontend/.env
+    ports:
+      - 3000:3000
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
+    networks:
+      - internal
 
   backend:
     container_name: backend
@@ -25,16 +29,28 @@ services:
     restart: unless-stopped
     env_file:
       - ./backend/.env
+    ports:
+      - 3001:3001
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
+    networks:
+      - internal
 
   caddy:
     image: caddy
+    restart: unless-stopped
     ports:
-      - 8080:8080
-      - 443:443
+      - "8080:8080"
+      - "443:443"
+      - "443:443/udp"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
     networks:
       - internal
+
+volumes:
+  caddy_data:
+  caddy_config:
