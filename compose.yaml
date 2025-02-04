@@ -1,3 +1,8 @@
+networks:
+  internal:
+    external: false
+    driver: bridge
+
 services:
   frontend:
     container_name: frontend
@@ -27,9 +32,9 @@ services:
   caddy:
     image: caddy
     ports:
-      - 80:80
+      - 8080:8080
       - 443:443
     volumes:
-      - ./caddy/data:/data/
-      - ./caddy/config:/config/
       - ./Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - internal

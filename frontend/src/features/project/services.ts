@@ -1,14 +1,20 @@
 import axios from "axios";
 import { SchemaCreateProjectType } from "./types";
 
-const authStorage = localStorage.getItem("auth-storage");
-const parsedToken = JSON.parse(authStorage as string).state._token;
+let parsedToken: string | null = null;
+
+if (typeof window !== "undefined") {
+    const authStorage = localStorage.getItem("auth-storage");
+    if (authStorage) {
+        parsedToken = JSON.parse(authStorage).state._token;
+    }
+}
 
 const apiClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
     headers: {
         "Content-Type": "application/json",
-        "authorization": `Bearer ${parsedToken}`
+        "authorization": parsedToken ? `Bearer ${parsedToken}` : "",
     },
 });
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { PageHeader } from "@/components/PageHeader";
 import { useState } from "react";
@@ -41,7 +41,9 @@ export default function Tasks() {
                     </Button>}
             </PageHeader>
 
-            <TasksTableCard project={data?.project}/>
+            <Suspense fallback={<div>Loading...</div>}>
+                <TasksTableCard project={data?.project} />
+            </Suspense>
 
             <CreateTaskModal
                 isOpen={isCreateTaskModalOpen}

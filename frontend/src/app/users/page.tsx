@@ -1,7 +1,7 @@
 "use client";
 
 import { PageHeader } from "@/components/PageHeader";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/authStore";
 import { CreateUserModal } from "@/features/user/components/CreateUserModal";
@@ -27,7 +27,9 @@ export default function Home() {
                     </Button>}
             </PageHeader>
 
-            <UsersTableCard />
+            <Suspense fallback={<div>Loading...</div>}>
+                <UsersTableCard />
+            </Suspense>
 
             <CreateUserModal
                 isOpen={isCreateUserModalOpen}

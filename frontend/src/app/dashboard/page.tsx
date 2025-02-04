@@ -1,7 +1,7 @@
 "use client";
 
 import { PageHeader } from "@/components/PageHeader";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CreateProjectModal } from "@/features/project/components/CreateProjectModal";
 import ProjectsTableCard from "@/features/project/components/ProjectsTableCard";
@@ -27,7 +27,9 @@ export default function Home() {
                     </Button>}
             </PageHeader>
 
-            <ProjectsTableCard />
+            <Suspense fallback={<div>Loading...</div>}>
+                <ProjectsTableCard />
+            </Suspense>
 
             <CreateProjectModal
                 isOpen={isCreateProjectModalOpen}
