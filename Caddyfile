@@ -1,0 +1,4 @@
+localhost {
+    reverse_proxy /* http://frontend:3000
+    reverse_proxy /api* http://backend:3001
+}

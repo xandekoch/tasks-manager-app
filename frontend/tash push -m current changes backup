@@ -1,0 +1,76 @@
+[1mdiff --git a/src/features/user/services.ts b/src/features/user/services.ts[m
+[1mindex 534513f..bc010bd 100644[m
+[1m--- a/src/features/user/services.ts[m
+[1m+++ b/src/features/user/services.ts[m
+[36m@@ -1,7 +1,31 @@[m
+ import axios from "axios";[m
+[31m-import { SchemaCreateUserType } from "./types";[m
+[32m+[m[32mimport { SchemaCreateUserType, User } from "./types";[m
+ [m
+ const isTest = process.env.NEXT_PUBLIC_ENV === "tests";[m
+[32m+[m[32mconst mockUsers: User[] = [[m
+[32m+[m[32m    { name: "John Doe", email: "john.doe@example.com", dateCreated: "Jan 1, 2024 12:00 am", status: "Active" },[m
+[32m+[m[32m    { name: "Jane Smith", email: "jane.smith@example.com", dateCreated: "Feb 15, 2024 3:30 pm", status: "Revoked" },[m
+[32m+[m[32m    { name: "Alice Brown", email: "alice.brown@example.com", dateCreated: "Mar 10, 2024 10:15 am", status: "Active" },[m
+[32m+[m[32m    { name: "Bob Johnson", email: "bob.johnson@example.com", dateCreated: "Apr 5, 2024 7:45 pm", status: "Active" },[m
+[32m+[m[32m    { name: "Charlie Williams", email: "charlie.williams@example.com", dateCreated: "May 12, 2024 1:05 pm", status: "Revoked" },[m
+[32m+[m[32m    { name: "David Lee", email: "david.lee@example.com", dateCreated: "Jun 22, 2024 2:30 pm", status: "Active" },[m
+[32m+[m[32m    { name: "Eva Martin", email: "eva.martin@example.com", dateCreated: "Jul 1, 2024 9:20 am", status: "Active" },[m
+[32m+[m[32m    { name: "Frank Garcia", email: "frank.garcia@example.com", dateCreated: "Aug 25, 2024 8:10 am", status: "Revoked" },[m
+[32m+[m[32m    { name: "Grace Miller", email: "grace.miller@example.com", dateCreated: "Sep 17, 2024 11:55 pm", status: "Active" },[m
+[32m+[m[32m    { name: "Hannah Davis", email: "hannah.davis@example.com", dateCreated: "Oct 3, 2024 4:30 pm", status: "Revoked" },[m
+[32m+[m[32m    { name: "Isaac Wilson", email: "isaac.wilson@example.com", dateCreated: "Nov 9, 2024 6:15 am", status: "Active" },[m
+[32m+[m[32m    { name: "Jack Moore", email: "jack.moore@example.com", dateCreated: "Dec 14, 2024 10:45 am", status: "Active" },[m
+[32m+[m[32m    { name: "Karen Taylor", email: "karen.taylor@example.com", dateCreated: "Jan 8, 2024 7:30 pm", status: "Revoked" },[m
+[32m+[m[32m    { name: "Leo Clark", email: "leo.clark@example.com", dateCreated: "Feb 20, 2024 12:00 pm", status: "Active" },[m
+[32m+[m[32m    { name: "Mia Rodriguez", email: "mia.rodriguez@example.com", dateCreated: "Mar 25, 2024 2:00 pm", status: "Active" },[m
+[32m+[m[32m    { name: "Nathan Lewis", email: "nathan.lewis@example.com", dateCreated: "Apr 30, 2024 11:00 am", status: "Revoked" },[m
+[32m+[m[32m    { name: "Olivia Walker", email: "olivia.walker@example.com", dateCreated: "May 17, 2024 6:30 pm", status: "Active" },[m
+[32m+[m[32m    { name: "Paul Young", email: "paul.young@example.com", dateCreated: "Jun 8, 2024 3:15 am", status: "Revoked" },[m
+[32m+[m[32m    { name: "Quincy Hall", email: "quincy.hall@example.com", dateCreated: "Jul 18, 2024 10:25 pm", status: "Active" },[m
+[32m+[m[32m    { name: "Rachel Allen", email: "rachel.allen@example.com", dateCreated: "Aug 2, 2024 5:50 pm", status: "Revoked" },[m
+[32m+[m[32m    { name: "Rachel Allen", email: "rachel.allen@example.com", dateCreated: "Aug 2, 2024 5:50 pm", status: "Revoked" },[m
+[32m+[m[32m];[m
+[32m+[m
+ [m
+ const apiClient = axios.create({[m
+     baseURL: process.env.NEXT_PUBLIC_API_URL,[m
+[36m@@ -26,5 +50,38 @@[m [mexport const userService = {[m
+             }[m
+         }[m
+     },[m
+[32m+[m
+[32m+[m[32m    fetchUsers: async (params: { search: string; sort: string; page: number, itemsPerPage: number }) => {[m
+[32m+[m[32m        const isTest = process.env.NEXT_PUBLIC_ENV === "tests";[m
+[32m+[m
+[32m+[m[32m        if (isTest) {[m
+[32m+[m[32m            // Filtering users[m
+[32m+[m[32m            const filteredUsers = mockUsers.filter((user) =>[m
+[32m+[m[32m                user.name.toLowerCase().includes(params.search.toLowerCase())[m
+[32m+[m[32m            );[m
+[32m+[m
+[32m+[m[32m            // Slice of users[m
+[32m+[m[32m            const startIndex = (params.page - 1) * params.itemsPerPage;[m
+[32m+[m[32m            const paginatedUsers = filteredUsers.slice(startIndex, startIndex + params.itemsPerPage);[m
+[32m+[m
+[32m+[m[32m            return {[m
+[32m+[m[32m                data: paginatedUsers.sort((a, b) => {[m
+[32m+[m[32m                    if (params.sort === "name") return a.name.localeCompare(b.name);[m
+[32m+[m[32m                    if (params.sort === "email") return a.email.localeCompare(b.email);[m
+[32m+[m[32m                    return 0;[m
+[32m+[m[32m                }),[m
+[32m+[m[32m                totalPages: Math.ceil(filteredUsers.length / params.itemsPerPage), // Total de páginas[m
+[32m+[m[32m            };[m
+[32m+[m[32m        } else {[m
+[32m+[m[32m            const response = await apiClient.get("/users", {[m
+[32m+[m[32m                params: {[m
+[32m+[m[32m                    search: params.search,[m
+[32m+[m[32m                    sort: params.sort,[m
+[32m+[m[32m                    page: params.page,[m
+[32m+[m[32m                },[m
+[32m+[m[32m            });[m
+[32m+[m[32m            return response.data;[m
+[32m+[m[32m        }[m
+[32m+[m[32m    },[m
+ };[m
+ [m
